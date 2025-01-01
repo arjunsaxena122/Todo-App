@@ -7,12 +7,13 @@ const app = express()
 // middleware
 app.use(json({limit:true}))
 app.use(urlencoded({extended:true,limit:true}))
-app.use(cors({
-    origin:process.env.ORIGIN_PATH,
+app.use(cookieParser())
+const corsOptions = {
+    origin: "http://localhost:5173",
     methods:["GET","PUT","PATCH","DELETE","POST"],
     credentials:true
-}))
-app.use(cookieParser())
+  };
+app.use(cors(corsOptions))
 
 
 // Import Routes

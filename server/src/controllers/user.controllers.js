@@ -23,87 +23,99 @@ async function isGeneratedAccessAndRefreshToken(_id) {
 }
 
 export async function userSignup(req, res) {
-  const { username, email, password } = req.body;
+  try {
+    const { username, email, password } = req.body;
 
-  if ([username, email, password].some((field) => field?.trim() === "")) {
-    throw new Api_Error(400, "All field are required");
+    if ([username, email, password].some((field) => field?.trim() === "")) {
+      throw new Api_Error(400, "All field are required");
+    }
+
+    const existedUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (existedUser) {
+      throw new Api_Error(400, "Already registered");
+    }
+
+    const user = await User.create({
+      username,
+      email,
+      password,
+    });
+
+    const createUser = await User.findById(user._id).select(
+      "-password -refreshToken"
+    );
+
+    if (!createUser) {
+      // using for the fetch user data
+      throw new Api_Error(
+        500,
+        "Something went wrong while registering the user"
+      );
+    }
+
+    return res
+      .status(200)
+      .json(new Api_Response(201,"Registered Successfully"));
+
+  } catch (error) {
+    // Error handling
+    if (error instanceof Api_Error) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+
+    console.error("Unexpected error: ", error);
+    return res.status(500).json({ message: "Something went wrong!" });
   }
-
-  const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
-
-  if (existedUser) {
-    throw new Api_Error(400, "Already registered");
-  }
-
-  const user = await User.create({
-    username,
-    email,
-    password,
-  });
-
-  const createUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
-
-  if (!createUser) {
-    // using for the fetch user data
-    throw new Api_Error(500, "Something went wrong while registering the user");
-  }
-
-  return res
-    .status(200)
-    .json(new Api_Response(201, createUser, "Registered Successfully"));
 }
 
 export async function userLogin(req, res) {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if ([email, password].some((field) => field?.trim() === "")) {
-    throw new Api_Error(400, "Email and Password are required");
-  }
+    if ([email, password].some((field) => field?.trim() === "")) {
+      throw new Api_Error(400, "Email and Password are required");
+    }
 
-  const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    throw new Api_Error(404, "Email doesn't exist");
-  }
+    if (!user) {
+      throw new Api_Error(404, "Email doesn't exist");
+    }
 
-  const isPassword = await user.isPasswordCorrect(password);
+    const isPassword = await user.isPasswordCorrect(password);
 
-  if (!isPassword) {
-    throw new Api_Error(401, "Invalid Password");
-  }
+    if (!isPassword) {
+      throw new Api_Error(401, "Invalid Password");
+    }
 
-  const { accessToken, refreshToken } = await isGeneratedAccessAndRefreshToken(
-    user._id
-  );
+    const { accessToken, refreshToken } =
+      await isGeneratedAccessAndRefreshToken(user._id);
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
 
-  const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
-
-  return res
-    .status(200)
-    .cookie("accessToken",accessToken,options)
-    .cookie("refreshToken",refreshToken,options)
-    .json(
-      new Api_Response(
-        200,
-        {
-          user: loggedInUser,
-          accessToken,
-          refreshToken,
-        },
-        "User logged In Successfully"
-      )
+    const loggedInUser = await User.findById(user._id).select(
+      "-password -refreshToken"
     );
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(new Api_Response(200,"Login Successfully"));
+  } catch (error) {
+    // Error handling
+
+    if (error instanceof Api_Error) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
 }
 
 export async function userLogout(req, res) {
@@ -119,10 +131,9 @@ export async function userLogout(req, res) {
     }
   );
 
-  const token = req.cookies.accessToken
-  const isBlackList = await blackListedToken.create({token})
+  const token = req.cookies.accessToken;
 
-  console.log("isBlack from userController", isBlackList)
+  await blackListedToken.create({ token });
 
   const options = {
     httpOnly: true,
@@ -133,7 +144,7 @@ export async function userLogout(req, res) {
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new Api_Response(200, {}, "Logged Out Successfully"));
+    .json(new Api_Response(200,"Log Out Successfully"));
 }
 
 export async function newRefreshAndAccessToken(req, res) {
@@ -150,13 +161,11 @@ export async function newRefreshAndAccessToken(req, res) {
       process.env.REFRESH_TOKEN_SECRET
     );
 
-
     const user = await User.findById(decodeToken?._id);
 
     if (!user) {
       throw new Api_Error(401, "Invalid refresh token");
     }
-
 
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new Api_Error(401, "Refresh token is expired or used");
@@ -169,7 +178,6 @@ export async function newRefreshAndAccessToken(req, res) {
 
     const { accessToken, refreshToken } =
       await isGeneratedAccessAndRefreshToken(user?._id);
-
 
     return res
       .status(200)

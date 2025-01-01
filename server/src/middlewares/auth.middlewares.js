@@ -14,8 +14,6 @@ export async function verifyJwt(req, _, next) {
     }
 
     const isBlackListedToken = await blackListedToken.findOne({token})
-
-    console.log("BlackListedToken",isBlackListedToken)
     
     if(isBlackListedToken){
       throw new Api_Error(401, "Invalid Token");
