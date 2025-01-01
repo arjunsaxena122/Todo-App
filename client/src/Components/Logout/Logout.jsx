@@ -1,19 +1,24 @@
-import React from 'react'
-import { logoutUserData } from '../../http'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { logoutUserData } from "../../http";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-function Logout({setIsAuthenticated}) {
+function Logout({ setIsAuthenticated }) {
 
-    const handleLogout = async() =>{
-        await logoutUserData()
-        setIsAuthenticated(false)
-    }
+  const navigate = useNavigate()
 
-  return (
-    <Link to={'/'}>
-      <button onClick={handleLogout}>Logout</button>
-    </Link>
-  )
+  const handleLogout = async () => {
+   try {
+    const res = await logoutUserData();
+    toast.success(res.data.message)
+    setIsAuthenticated(false);
+    navigate("/")
+   } catch (error) {
+    toast.error(error.response.data.message)
+   }
+  };
+
+  return <button onClick={handleLogout}>Logout</button>;
 }
 
-export default Logout
+export default Logout;

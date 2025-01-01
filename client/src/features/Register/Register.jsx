@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { registerUserData } from "../../http";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { RxCross1 } from "react-icons/rx";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +10,8 @@ const Register = () => {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,15 +21,28 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: ADD react toast
-
-    console.log("Form Data Submitted: ", formData);
-    let res = await registerUserData(formData);
-    console.log(res);
+    try {
+      const res = await registerUserData(formData);
+      // TODO: Add react toast
+      console.log(res);
+      if (res.data.statusCode === 201) {
+        toast.success(res.data.message);
+        navigate("/login");
+      }
+      setFormData({ username: "", email: "", password: "" });
+    } catch (error) {
+      toast.error(error.response.data.message);
+      navigate("/");
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 relative">
+      <Link to={"/"}>
+        <div className="absolute top-28 right-56">
+          <RxCross1 />
+        </div>
+      </Link>
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"

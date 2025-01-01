@@ -7,13 +7,14 @@ import {
 } from "react-router-dom";
 import HomeLayout from "./Pages/HomeLayout/HomeLayout";
 import ErrorPage from "./Components/Error/ErrorPage";
-import About from "./Pages/About/About";
 import Register from "./features/Register/Register";
 import Login from "./features/Login/Login";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import Todo from "./Pages/Todo/Todo";
+// import {
+//   QueryClient,
+//   QueryClientProvider,
+// } from "@tanstack/react-query";
 
 function App() {
   // const queryClient = new QueryClient();
@@ -22,9 +23,9 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path="/" element={<HomeLayout />} />
-        <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/todo" element={<Todo />} />
         <Route path="*" element={<ErrorPage />} />
       </>
     )
@@ -32,7 +33,11 @@ function App() {
 
   return (
     // <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
+
+    <>
+      <Toaster position="top-right" reverseOrder={false} />
+      <RouterProvider router={router} />
+    </>
     // </QueryClientProvider>;
   );
 }

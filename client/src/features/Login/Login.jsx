@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { loginUserData } from "../../http";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { RxCross1 } from "react-icons/rx";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -7,24 +10,38 @@ const Login = () => {
     password: "",
   });
 
+
+  const navigate = useNavigate()
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await loginUserData(formData)
-    console.log(res.data.data)
-    // TODO: Add react toast
-
-    console.log("Login Data Submitted: ", formData);
-    // Add your login logic here (e.g., API calls)
+    try {
+      const res = await loginUserData(formData);
+      // TODO: Add react toast
+      if (res.data.statusCode === 200) {
+        toast.success(res.data.message);
+        navigate("/todo")
+      }
+      setFormData({ email: "", password: "" });
+    } catch (error) {
+      toast.error(error.response.data.message);
+      navigate("/login")
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 relative">
+      <Link to={"/"}>
+      <div className="absolute top-40 right-56">
+      <RxCross1 />
+      </div>
+      </Link>
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"

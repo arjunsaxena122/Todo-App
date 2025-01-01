@@ -12,9 +12,9 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo */}
         <div className="text-xl font-bold">
-          <a href="#" className="hover:text-gray-200">
+          <Link to={'/'} className="hover:text-gray-200">
             MyWebsite
-          </a>
+          </Link>
         </div>
 
         {/* Menu Items */}
@@ -23,12 +23,6 @@ const Navbar = () => {
             className="hover:text-gray-200 transition duration-300"
           >
             Home
-          </Link>
-          <Link
-            to={'/about'}
-            className="hover:text-gray-200 transition duration-300"
-          >
-            About
           </Link>
           <Link
             to={'/login'}
