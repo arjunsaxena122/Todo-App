@@ -1,38 +1,43 @@
 import React from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 import { useTodoContext } from "../../Store";
 import Logout from "../Logout/Logout";
 
 const Navbar = () => {
-
-  const {isAuthenticated, setIsAuthenticated} = useTodoContext()
+  const { isAuthenticated, login } = useTodoContext();
 
   return (
     <nav className="bg-blue-500 text-white shadow-md">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo */}
         <div className="text-xl font-bold">
-          <Link to={'/'} className="hover:text-gray-200">
+          <Link to={"/"} className="hover:text-gray-200">
             MyWebsite
           </Link>
         </div>
 
         {/* Menu Items */}
         <div className="hidden md:flex space-x-6">
-          <Link to={'/'}
+          <Link
+            to={"/"}
             className="hover:text-gray-200 transition duration-300"
           >
             Home
           </Link>
+
+          {isAuthenticated ? (
+            <Logout />
+          ) : (
+            <Link
+              to={"/login"}
+              onClick={() => login()}
+              className="hover:text-gray-200 transition duration-300"
+            >
+              {isAuthenticated ? <Logout /> : "Login"}
+            </Link>
+          )}
           <Link
-            to={'/login'}
-            onClick={()=>setIsAuthenticated(!isAuthenticated)}
-            className="hover:text-gray-200 transition duration-300"
-          >
-            {isAuthenticated?<Logout setIsAuthenticated={setIsAuthenticated}/>:"Login"}
-          </Link>
-          <Link
-          to={'/register'}
+            to={"/register"}
             className="hover:text-gray-200 transition duration-300"
           >
             SignUp

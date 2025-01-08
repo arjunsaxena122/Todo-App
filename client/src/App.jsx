@@ -11,6 +11,7 @@ import Register from "./features/Register/Register";
 import Login from "./features/Login/Login";
 import { Toaster } from "react-hot-toast";
 import Todo from "./Pages/Todo/Todo";
+import ProtectedRoutes from "./Components/ProtectedRoutes";
 // import {
 //   QueryClient,
 //   QueryClientProvider,
@@ -25,7 +26,7 @@ function App() {
         <Route path="/" element={<HomeLayout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/todo" element={<Todo />} />
+        <Route path="/todo" element={<ProtectedRoutes><Todo /></ProtectedRoutes>} />
         <Route path="*" element={<ErrorPage />} />
       </>
     )
