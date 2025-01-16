@@ -22,7 +22,7 @@ async function isGeneratedAccessAndRefreshToken(_id) {
   }
 }
 
-export async function userSignup(req, res) {
+export async function userSignup(req, res,next) {
   try {
     const { username, email, password } = req.body;
 
@@ -62,16 +62,11 @@ export async function userSignup(req, res) {
 
   } catch (error) {
     // Error handling
-    if (error instanceof Api_Error) {
-      return res.status(error.statusCode).json({ message: error.message });
-    }
-
-    console.error("Unexpected error: ", error);
-    return res.status(500).json({ message: "Something went wrong!" });
+    next(new Api_Error(400, error.message));
   }
 }
 
-export async function userLogin(req, res) {
+export async function userLogin(req, res, next) {
   try {
     const { email, password } = req.body;
 
@@ -107,14 +102,10 @@ export async function userLogin(req, res) {
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
-      .json(new Api_Response(200,"Login Successfully"));
+      .json(new Api_Response(200,"Login Successfully",{accessToken:accessToken}));
   } catch (error) {
-    // Error handling
-
-    if (error instanceof Api_Error) {
-      return res.status(error.statusCode).json({ message: error.message });
-    }
-    return res.status(500).json({ message: "Something went wrong!" });
+    console.log(error)
+    next(new Api_Error(400,error.message)) 
   }
 }
 
@@ -193,4 +184,8 @@ export async function newRefreshAndAccessToken(req, res) {
   } catch (error) {
     throw new Api_Error(401, error.message || "Invalid refresh token");
   }
+}
+
+export const checkAuth = (_,res) =>{
+  return res.status(200).json({isAuthentication:true})
 }
