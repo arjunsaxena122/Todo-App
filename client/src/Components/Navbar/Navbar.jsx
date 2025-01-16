@@ -5,7 +5,6 @@ import Logout from "../Logout/Logout";
 
 const Navbar = () => {
   const { isAuthenticated, login } = useTodoContext();
-
   return (
     <nav className="bg-blue-500 text-white shadow-md">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
@@ -26,6 +25,21 @@ const Navbar = () => {
           </Link>
 
           {isAuthenticated ? (
+            <Link
+            to={"/todo"}
+            className="hover:text-gray-200 transition duration-300"
+          >
+            Todo
+          </Link>
+          ) : (
+            <Link
+              to={"/register"}
+              className="hover:text-gray-200 transition duration-300"
+            >
+              Signup
+            </Link>
+          )}
+          {isAuthenticated ? (
             <Logout />
           ) : (
             <Link
@@ -33,15 +47,9 @@ const Navbar = () => {
               onClick={() => login()}
               className="hover:text-gray-200 transition duration-300"
             >
-              {isAuthenticated ? <Logout /> : "Login"}
+              Login
             </Link>
           )}
-          <Link
-            to={"/register"}
-            className="hover:text-gray-200 transition duration-300"
-          >
-            SignUp
-          </Link>
         </div>
 
         {/* Hamburger Menu (for Mobile) */}

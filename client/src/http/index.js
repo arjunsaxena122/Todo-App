@@ -20,3 +20,6 @@ export const loginUserData = (data) => {
 export const logoutUserData = () => {
   return api.patch("/user/logout", { withCredentials: true });
 };
+
+
+export const checkUserAuth = () =>{ return api.get("/user/check-auth", { withCredentials: true })}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -12,6 +12,10 @@ import Login from "./features/Login/Login";
 import { Toaster } from "react-hot-toast";
 import Todo from "./Pages/Todo/Todo";
 import ProtectedRoutes from "./Components/ProtectedRoutes";
+import { checkUserAuth } from "./http";
+import { useTodoContext } from "./Store";
+import Loading from "./Components/Loading/Loading";
+
 // import {
 //   QueryClient,
 //   QueryClientProvider,
@@ -26,11 +30,43 @@ function App() {
         <Route path="/" element={<HomeLayout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/todo" element={<ProtectedRoutes><Todo /></ProtectedRoutes>} />
+        <Route
+          path="/todo"
+          element={
+            <ProtectedRoutes>
+              <Todo />
+            </ProtectedRoutes>
+          }
+        />
         <Route path="*" element={<ErrorPage />} />
       </>
     )
   );
+
+  const { setIsAuthenticated } = useTodoContext();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const checkAuth = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    setIsLoading(true);
+    try {
+      const res = await checkUserAuth();
+      if (token && res.status === 200) {
+        setIsAuthenticated(res.data.isAuthentication);
+      }
+    } catch(error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  },[]);
+
+  if(isLoading) return <Loading/>
 
   return (
     // <QueryClientProvider client={queryClient}>

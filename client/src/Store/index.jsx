@@ -10,7 +10,6 @@ const todoContext = createContext({
 
 export const TodoContextProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState({});
 
   const login = () => setIsAuthenticated(true)
   const logout = () => setIsAuthenticated(false)
@@ -19,6 +18,7 @@ export const TodoContextProvider = ({ children }) => {
     <todoContext.Provider
       value={{
         isAuthenticated,
+        setIsAuthenticated,
         login,
         logout
       }}

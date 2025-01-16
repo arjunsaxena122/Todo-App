@@ -16,7 +16,8 @@ function Logout() {
       const res = await logoutUserData();
       toast.success(res?.data?.message);
       logout();
-      setTimeout(()=>navigate("/"),2000)
+      localStorage.removeItem("token")
+      navigate("/")
     } catch (error) {
       toast.error(error?.response?.data?.message);
     } finally {
@@ -24,17 +25,9 @@ function Logout() {
     }
   };
 
-  return (
-    <div>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      )}
-    </div>
-  );
+  if(isLoading) return <Loading/>
+
+  return  <button onClick={handleLogout}>Logout</button>;
 }
 
 export default Logout;

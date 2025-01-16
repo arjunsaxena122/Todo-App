@@ -26,6 +26,9 @@ const Login = () => {
       const res = await loginUserData(formData);
       // TODO: Add react toast
       if (res.data.statusCode === 200) {
+        let accessToken = res.data.data.accessToken
+        localStorage.setItem("token", accessToken)
+        console.log()
         toast.success(res.data.message);
         navigate("/todo");
       }
@@ -39,13 +42,11 @@ const Login = () => {
     }
   };
 
+  if(isLoading) return <Loading/>
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 relative">
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <Link to={"/"}>
+      <Link to={"/"}>
             <div className="absolute top-40 right-[35%]">
               <RxCross1 />
             </div>
@@ -105,8 +106,6 @@ const Login = () => {
               Login
             </button>
           </form>
-        </>
-      )}
     </div>
   );
 };
