@@ -7,6 +7,8 @@ export const createTask = async (req, res) => {
     const { title, task } = req.body;
     const createdByUser = req.user._id;
 
+    console.log(title,task)
+
     if (!title || !task) {
       throw new Api_Error(400, "All fields are required");
     }
@@ -24,7 +26,7 @@ export const createTask = async (req, res) => {
 
     return res
       .status(201)
-      .json(new Api_Response(201, populateTodo, "Task Created Successfully"));
+      .json(new Api_Response(201,"Task Created Successfully"));
   } catch (error) {
     console.log(error.message);
   }
@@ -32,15 +34,16 @@ export const createTask = async (req, res) => {
 
 export const getTask = async (req, res) => {
   try {
-    const _id = await Todo.findOne({ createdByUser: req.user._id });
+    const id = await Todo.find({ createdByUser: req.user._id }).select("title task isCompleted");
 
-    if (!_id) {
+    if (!id) {
       throw new Api_Error(400, "we couldn't find the User");
     }
 
+
     return res
       .status(200)
-      .json(new Api_Response(200, _id, "Todo data fetched successfully"));
+      .json(new Api_Response(200,"Todo data fetched successfully",id));
   } catch (error) {
     console.log(error.message);
   }
