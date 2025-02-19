@@ -25,12 +25,20 @@ const Navbar = () => {
           </Link>
 
           {isAuthenticated ? (
-            <Link
-            to={"/todo"}
-            className="hover:text-gray-200 transition duration-300"
-          >
-            Todo
-          </Link>
+            <>
+              <Link
+                to={"/todo"}
+                className="hover:text-gray-200 transition duration-300"
+              >
+                Todo
+              </Link>
+              <Link
+                to={"/todo-board"}
+                className="hover:text-gray-200 transition duration-300"
+              >
+                Todo Board
+              </Link>
+            </>
           ) : (
             <Link
               to={"/register"}

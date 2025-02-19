@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
 } from "react-router-dom";
-import HomeLayout from "./Pages/HomeLayout/HomeLayout";
 import ErrorPage from "./Components/Error/ErrorPage";
-import Register from "./features/Register/Register";
-import Login from "./features/Login/Login";
-import { Toaster } from "react-hot-toast";
-import Todo from "./Pages/Todo/Todo";
-import ProtectedRoutes from "./Components/ProtectedRoutes";
-import { checkUserAuth } from "./http";
-import { useTodoContext } from "./Store";
 import Loading from "./Components/Loading/Loading";
+import ProtectedRoutes from "./Components/ProtectedRoutes";
+import Login from "./features/Login/Login";
+import Register from "./features/Register/Register";
+import { checkUserAuth } from "./http";
+import HomeLayout from "./Pages/HomeLayout/HomeLayout";
+import Todo from "./Pages/Todo/Todo";
+import TodoBoard from "./Pages/Todo/TodoBoard";
+import { useTodoContext } from "./Store";
 
 // import {
 //   QueryClient,
@@ -38,6 +39,14 @@ function App() {
             </ProtectedRoutes>
           }
         />
+        <Route
+          path="/todo-board"
+          element={
+            <ProtectedRoutes>
+              <TodoBoard />
+            </ProtectedRoutes>
+          }
+        />
         <Route path="*" element={<ErrorPage />} />
       </>
     )
@@ -55,8 +64,8 @@ function App() {
       if (token && res.status === 200) {
         setIsAuthenticated(res.data.isAuthentication);
       }
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -64,9 +73,9 @@ function App() {
 
   useEffect(() => {
     checkAuth();
-  },[]);
+  }, []);
 
-  if(isLoading) return <Loading/>
+  if (isLoading) return <Loading />;
 
   return (
     // <QueryClientProvider client={queryClient}>

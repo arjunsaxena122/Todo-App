@@ -28,7 +28,6 @@ const Login = () => {
       if (res.data.statusCode === 200) {
         let accessToken = res.data.data.accessToken
         localStorage.setItem("token", accessToken)
-        console.log()
         toast.success(res.data.message);
         navigate("/todo");
       }

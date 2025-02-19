@@ -10,16 +10,24 @@ const api = axios.create({
 });
 
 export const registerUserData = (data) => {
-  return api.post("/user/signup", data, { withCredentials: true });
+  return api.post("/user/signup", data);
 };
 
 export const loginUserData = (data) => {
-  return api.post("/user/login", data, { withCredentials: true });
+  return api.post("/user/login", data);
 };
 
 export const logoutUserData = () => {
-  return api.patch("/user/logout", { withCredentials: true });
+  return api.patch("/user/logout");
 };
 
+export const checkUserAuth = () => {
+  return api.get("/user/check-auth");
+};
 
-export const checkUserAuth = () =>{ return api.get("/user/check-auth", { withCredentials: true })}
+export const createTask = (data) => {
+  return api.post("/todo/add-todo",data);
+};
+export const getTask = () => {
+  return api.get("/todo/get-todo");
+};
