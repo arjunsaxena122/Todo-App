@@ -31,3 +31,11 @@ export const createTask = (data) => {
 export const getTask = () => {
   return api.get("/todo/get-todo");
 };
+
+export const delTask = (id) =>{
+  return api.delete(`/todo/delete-todo/${id}`)
+}
+
+export const updateTask = (id,data) =>{
+  return api.patch(`/todo/update-todo/${id}`,data)
+}

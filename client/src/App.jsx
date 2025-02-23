@@ -65,7 +65,7 @@ function App() {
         setIsAuthenticated(res.data.isAuthentication);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     } finally {
       setIsLoading(false);
     }

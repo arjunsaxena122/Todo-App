@@ -26,7 +26,7 @@ const Login = () => {
       const res = await loginUserData(formData);
       // TODO: Add react toast
       if (res.data.statusCode === 200) {
-        let accessToken = res.data.data.accessToken
+        let accessToken = res.data.data?.accessToken
         localStorage.setItem("token", accessToken)
         toast.success(res.data.message);
         navigate("/todo");
