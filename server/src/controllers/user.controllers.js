@@ -102,7 +102,7 @@ export async function userLogin(req, res, next) {
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
-      .json(new Api_Response(200,"Login Successfully",{accessToken:accessToken}));
+      .json(new Api_Response(200,"Login Successfully"));
   } catch (error) {
     console.log(error)
     next(new Api_Error(400,error.message)) 
